@@ -68,9 +68,16 @@ Lead Creation and Conversion
     VerifyText            Your lead has been converted
     ClickText             ${DynamicCompany}
     ClickText             Details
-    VerifyText            Account Name                ${DynamicCompany}
+    VerifyText            ${DynamicCompany}
     ClickText             Related
-    # ClickText           Accounts
+    VerifyText            ${DynamicLastName}
+    ClickText             ${DynamicLastName}
+    Clicktext             Details
+    VerifyText            ${DynamicCompany}
+    ClickText             Related
+    
+    # VerifyText            ${DynamicCompany}
+    # ClickText             ${DynamicCompany}
     # Clicktext           ${Company}
     # VerifyText          ${Last name}
     # VerifyElement       xpath=//*[text()='JohnDeer Pvt.Ltd.-']
