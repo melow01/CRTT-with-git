@@ -4,7 +4,7 @@ Documentation             New test suite
 # You can change imported library to "QWeb" if testing generic web application, not Salesforce.
 Library                   QForce
 Library                   String
-Suite Setup               Open Browser                ${loginURL}           chrome
+Suite Setup               Open Browser                ${loginURL}             chrome
 Suite Teardown            Close All Browsers
 
 *** Variables ******
@@ -20,8 +20,9 @@ ${passkey}                XH8ZUPTURK
 
 
 Login to Salesforce
-    ${RandomSuffix}       Generate Random String      5                     [LETTERS][NUMBER]
-    ${DynamicLastName}    Catenate                    Seperator=_           Garvansh             ${RandomSuffix}
+    ${RandomSuffix}       Generate Random String      5                       [LETTERS][NUMBER]
+    ${DynamicLastName}    Catenate                    Garvansh                ${RandomSuffix}
+    ${DynamicCompany}     Catenate                    Comp                    ${RandomSuffix}
 
 
     TypeText              Username                    ${username}
@@ -42,11 +43,11 @@ Login to Salesforce
     #                     ClickText                   New
     #                     VerifyText                  New Account
     #                     ClickText                   Account Name
-    #                     TypeText                    Account Name          Test Account2
-    #                     PickList                    Rating                Hot
-    #                     ClickText                   Save                  partial_match= False
+    #                     TypeText                    Account Name            Test Account2
+    #                     PickList                    Rating                  Hot
+    #                     ClickText                   Save                    partial_match= False
     #                     ClickText                   Details
-    #                     VerifyText                  Account Name          Test Account2
+    #                     VerifyText                  Account Name            Test Account2
 
 Lead Creation and Conversion
     ClickText             Leads
@@ -55,17 +56,20 @@ Lead Creation and Conversion
     Clicktext             Salutation                  Mr.
     ClickText             Last Name
     TypeText              Last Name                   ${DynamicLastName}
-    # ClickText           Company
-    # TypeText            Company                     ${Company}
-    # Picklist            Lead Status                 Open - Not Contacted
-    # ClickText           Save                        partial_match=False
-    # ClickElement        xpath=//*[text()='Show more actions']
-    # ClickText           Convert
-    # VerifyText          Convert Lead
-    # VerifyPickList      Converted Status            Closed - Converted
-    # ClickText           Convert
-    # VerifyText          Your lead has been converted
-    # ClickText           Go to Leads
+    ClickText             Company
+    TypeText              Company                     ${DynamicCompany}
+    Picklist              Lead Status                 Open - Not Contacted
+    ClickText             Save                        partial_match=False
+    ClickElement          xpath=//*[text()='Show more actions']
+    ClickText             Convert
+    VerifyText            Convert Lead
+    VerifyPickList        Converted Status            Closed - Converted
+    ClickText             Convert
+    VerifyText            Your lead has been converted
+    ClickText             ${DynamicCompany}
+    ClickText             Details
+    VerifyText            Account Name                ${DynamicCompany}
+    ClickText             Related
     # ClickText           Accounts
     # Clicktext           ${Company}
     # VerifyText          ${Last name}
