@@ -75,9 +75,12 @@ Lead Creation and Conversion
     Clicktext             Details
     VerifyText            ${DynamicCompany}
     ClickText             Related
-    
-    # VerifyText            ${DynamicCompany}
-    # ClickText             ${DynamicCompany}
+    ClickElement          xpath=//article[contains(@aria-label,'Opportunities')]//a[.//span[contains(text(),'View All')]]
+    ClickText             ${DynamicCompany}
+    ClickText             Details
+
+    # VerifyText          ${DynamicCompany}
+    # ClickText           ${DynamicCompany}
     # Clicktext           ${Company}
     # VerifyText          ${Last name}
     # VerifyElement       xpath=//*[text()='JohnDeer Pvt.Ltd.-']
