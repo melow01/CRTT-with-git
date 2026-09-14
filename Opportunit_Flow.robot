@@ -19,7 +19,7 @@ ${passkey}             0UJKJA9V82
 Login to Salesforce
     ${RandomSuffix}    Generate Random String      5                      [LETTERS][NUMBER]
     ${CurrentTime}     Get Current Date            result_format=%H:%M
-    ${CloseDate}       Get Current Date            increment=7 days       result_format=%d/%m/%Y
+    ${CloseDate}       Get Current Date            increment=7 days       result_format=%m/%d/%Y
     ${DynamicName}     Catenate                    Garvansh               ${CurrentTime}
 
     # ${DynamicCompany}                            Catenate               Comp                 ${RandomSuffix}
@@ -42,4 +42,6 @@ Opportunity Flow
     PickList           Stage                       Qualification
     ClickText          Close Date
     TypeText           Close Date                  ${CloseDate}
-
+    ClickText          Save                        partial_match=False
+    ClickText          Related
+    ClickElement       //*[text()='Products']
