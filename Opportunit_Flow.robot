@@ -5,25 +5,25 @@ Documentation          New test suite
 Library                QForce
 Library                String
 Library                DateTime
-Suite Setup            Open Browser                ${loginURL}            chrome
+Suite Setup            Open Browser                ${loginURL}                 chrome
 Suite Teardown         Close All Browsers
 
 *** Variables ******
 ${loginURL}            https://login.salesforce.com/
 ${username}            garvanshcrt@cyntexa.com
 ${password}            @Mittal123
-${passkey}             0UJKJA9V82
-${Is_Visible}            IsElementVisible    //span[@title='Cases']
+${passkey}             GOLF05N0TY
+${Is_Visible}          IsElementVisible            //span[@title='Cases']
 
 *** Test Cases ***
 
 Login to Salesforce
-    ${RandomSuffix}    Generate Random String      5                      [LETTERS][NUMBER]
+    ${RandomSuffix}    Generate Random String      5                           [LETTERS][NUMBER]
     ${CurrentTime}     Get Current Date            result_format=%H:%M
-    ${CloseDate}       Get Current Date            increment=7 days       result_format=%m/%d/%Y
-    ${DynamicName}     Catenate                    Garvansh               ${CurrentTime}
+    ${CloseDate}       Get Current Date            increment=7 days            result_format=%m/%d/%Y
+    ${DynamicName}     Catenate                    Garvansh                    ${CurrentTime}
 
-    # ${DynamicCompany}                            Catenate               Comp                      ${RandomSuffix}
+    # ${DynamicCompany}                            Catenate                    Comp                      ${RandomSuffix}
 
 
     TypeText           Username                    ${username}
@@ -46,15 +46,15 @@ Login to Salesforce
     # ClickText        Save                        partial_match=False
     # ClickText        Related
     # ClickElement     //*[text()='Products']
-    # ${OpportunityCount}=                         Get Element Count      xpath=//table//tbody//tr//th//a
-    # FOR              ${Index}                    IN RANGE               1                         ${OpportunityCount + 1}
+    # ${OpportunityCount}=                         Get Element Count           xpath=//table//tbody//tr//th//a
+    # FOR              ${Index}                    IN RANGE                    1                         ${OpportunityCount + 1}
     #                  ClickElement                xpath=(*[@title='Opportunity Name'])[${Index}]
-    #                  ${StageValue}=              GetText                xpath=//*[text()='Stage']
+    #                  ${StageValue}=              GetText                     xpath=//*[text()='Stage']
     #                  IF                          '${StageValue}' == 'Negotiation/Review'
     #                  # Yaha required action perform karo
     #                  Log                         Required Opportunity found
     #                  ClickText                   Edit Amount
-    #                  TypeText                    Amount                 1
+    #                  TypeText                    Amount                      1
     #                  Exit For Loop
     #                  END
     #                  GoBack
@@ -62,10 +62,11 @@ Login to Salesforce
     # END
 Practice For Conditions
     ClickText          Contacts
-    ClickText          Test Lead 1
+    # ClickElement       xpath=//button[@name='pipelineInspectionToListView']
+    ClickText          Test
+    ClickText          Details
     # Store value of Email field
-    ${ContactEmail}    GetText    xpath=//div[@data-target-selection-name='sfdc:RecordField.Contact.Email']
+    ${ContactEmail}=    GetText    Email
 
     log                ${ContactEmail}
-    VerifText          ${ContactEmail}
-    
+    VerifyText         ${ContactEmail}
