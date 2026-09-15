@@ -45,3 +45,17 @@ Opportunity Flow
     ClickText          Save                        partial_match=False
     ClickText          Related
     ClickElement       //*[text()='Products']
+    # ${OpportunityCount}=    Get Element Count    xpath=//table//tbody//tr//th//a
+    # FOR    ${Index}    IN RANGE    1    ${OpportunityCount + 1}
+    #     ClickElement    xpath=(*[@title='Opportunity Name'])[${Index}]
+    #     ${StageValue}=    GetText    xpath=//*[text()='Stage']
+    #     IF    '${StageValue}' == 'Negotiation/Review'
+    #         # Yaha required action perform karo
+    #         Log    Required Opportunity found
+    #         ClickText       Edit Amount
+    #         TypeText        Amount            1
+    #         Exit For Loop
+    #     END
+    #     GoBack
+    #     ClickText    Opportunities
+    # END
