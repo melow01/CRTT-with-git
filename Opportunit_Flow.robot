@@ -57,7 +57,7 @@ Opportunity Flow
     #@{price_list}       Create List
     &{Product_Price}     Create Dictionary
     @{Product_list}      Create List                 GenWatt Diesel 1000kW       Installation: Industrial - High            SLA: Gold
-    @{Quantity_List}     Create List                 3                           2                                          1
+    @{Quantity_List}     Create List                 1                           2                                          3
     # &{Product_qty}       Create Dictionary           GenWatt Diesel 1000kW= 2     Installation: Industrial - High= 1          SLA: Gold= 2
     ClickElement         xpath=//input[@aria-describedby='Search']
     FOR                  ${Product}                  IN                          @{Product_list}
@@ -72,9 +72,9 @@ Opportunity Flow
     Log Dictionary       ${Product_Price}
     Log                  ${Product_Price}
 
-    FOR                  ${product_11}    IN                        @{Product_list}
-        ClickElement    xpath=//tr[.//a[text()='${Product}']]//button[contains(@title,'Edit Quantity')]
-        # TypeText        Quantity         @{Quantity_List}[0]            anchor=${Product_11}
+    FOR    ${index}    ${Product}    IN ENUMERATE    @{Product_list}
+        ClickElement    xpath=//tr[.//a[text()='${Product}']]//button[contains(@title,'Edit Quantity')]      clicks=2
+        TypeText        ${Quantity_List}[${index}]    Quantity                        anchor=${Product}    
     END
 
 
@@ -128,5 +128,5 @@ Opportunity Flow
     #                    TypeText                    Last Name                   ${Contact_Name}
     #                    ClickText                   Save & New                  partial_match=TRUE
     #                    Log                         Current Account: ${Contact_Name}
-    # END
+    # END           @{Quantity_List}[0]                        anchor=${Product}                        anchor=${Product}
 
