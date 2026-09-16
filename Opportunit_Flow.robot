@@ -42,21 +42,23 @@ Login to Salesforce
 Opportunity Flow
     Login salesforce
     ClickText            Opportunities
-    # ClickText            New
-    # UseModal             On
-    # ClickText            Opportunity Name
-    # TypeText             Opportunity Name            ${DynamicName}
-    # PickList             Stage                       Qualification
-    # ClickText            Close Date
-    # TypeText             Close Date                  ${CloseDate}
-    # ClickText            Save                        partial_match=False
-    # ClickText            Related
+    # ClickText          New
+    # UseModal           On
+    # ClickText          Opportunity Name
+    # TypeText           Opportunity Name            ${DynamicName}
+    # PickList           Stage                       Qualification
+    # ClickText          Close Date
+    # TypeText           Close Date                  ${CloseDate}
+    # ClickText          Save                        partial_match=False
+    # ClickText          Related
     ClickText            Garvansh 08:25
     ClickElement         xpath\=//a[contains(@href, 'OpportunityLineItems')]
     ClickElement         xpath=//div[@title='Add Products']
     #@{price_list}       Create List
-    ${Product_Price}     Create Dictionary
-    @{Product_list}      Create List                 GenWatt Diesel 1000kW       Installation: Industrial - High          SLA: Gold
+    &{Product_Price}     Create Dictionary
+    @{Product_list}      Create List                 GenWatt Diesel 1000kW       Installation: Industrial - High            SLA: Gold
+    @{Quantity_List}     Create List                 3                           2                                          1
+    # &{Product_qty}       Create Dictionary           GenWatt Diesel 1000kW= 2     Installation: Industrial - High= 1          SLA: Gold= 2
     ClickElement         xpath=//input[@aria-describedby='Search']
     FOR                  ${Product}                  IN                          @{Product_list}
         TypeText         Search Products             ${Product}
@@ -64,9 +66,16 @@ Opportunity Flow
         ClickElement     xpath=//div[@role='listbox']
         ClickCheckbox    ${Product}                  on
         ${price}         Get Text                    xpath\=//tr[.//a[text()\='${Product}']]//span[contains(@class,'forceOutputCurrency')]
-        Set To Dictionary                            ${Product_Price}            {Product}                   {price}
+        Set To Dictionary                            ${Product_Price}            ${Product}                  ${price}
     END
     ClickElement         xpath=//button[@title='Next']
+    Log Dictionary       ${Product_Price}
+    Log                  ${Product_Price}
+
+    FOR                  ${product_11}    IN                        @{Product_list}
+        ClickElement    xpath=//tr[.//a[text()='${Product}']]//button[contains(@title,'Edit Quantity')]
+        # TypeText        Quantity         @{Quantity_List}[0]            anchor=${Product_11}
+    END
 
 
     # TypeText           Search                      GenWatt Diesel 1000kW
@@ -106,18 +115,18 @@ Opportunity Flow
     #                    ${count}                    GetElementCount             xpath\=//a[contains(@href\='OpportunityLineItems')]
     #                    Log                         ${count}
 
-Practice Loop
-    Login salesforce
-    @{Contact_Names}=    Create List                 Trial1                      Trial2                      Trial3
-    ClickText            Contacts
-    ClickText            New
+    # Practice Loop
+    # Login salesforce
+    # @{Contact_Names}=                              Create List                 Trial1                      Trial2         Trial3
+    # ClickText          Contacts
+    # ClickText          New
 
 
-    FOR                  ${Contact_Name}             IN                          @{Contact_Names}
+    # FOR                ${Contact_Name}             IN                          @{Contact_Names}
 
-        ClickText        Last Name
-        TypeText         Last Name                   ${Contact_Name}
-        ClickText        Save & New                  partial_match=TRUE
-        Log              Current Account: ${Contact_Name}
-    END
+    #                    ClickText                   Last Name
+    #                    TypeText                    Last Name                   ${Contact_Name}
+    #                    ClickText                   Save & New                  partial_match=TRUE
+    #                    Log                         Current Account: ${Contact_Name}
+    # END
 
