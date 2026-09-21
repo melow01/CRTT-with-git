@@ -22,7 +22,7 @@ Login salesforce
 ${loginURL}                     https://login.salesforce.com/
 ${username}                     garvanshcrt@cyntexa.com
 ${password}                     @Mittal123
-${passkey}                      LI8WH67EX3
+${passkey}                      1Y1PSZNALV
 ${Is_Visible}                   IsElementVisible            //span[@title='Cases']
 
 
@@ -84,34 +84,114 @@ Opportunity Flow
     ClickElement                xpath=//a[text()='${DynamicName}']
     ClickText                   Details
 
+
     #---------------------------------------------------------------------------------------Price Validation-----------------------------------------
+    
     ClickText                   Products                    partial_match=False
 
     &{product_price}            Create Dictionary
     &{product_quantity}         Create Dictionary
-    FOR                         ${prod}                     IN                          @{Product_list}
-        ${quantity}=            Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'uiOutputNumber')]
-        ${sales_price}=         Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'forceOutputCurrency')]
-        ${product_quantity}[${prod}]=                       Set Variable                ${quantity}
-        ${product_price}=       Set Variable                ${sales_price}
-    END
-    ${total_amount}=            Set Variable                0
-    FOR                         ${produ}                    IN                          @{Product_list}
-        ${quantity}=            Convert To Number           ${quantity}
-        ${sales_price}=         Remove String               ${sales_price}              $                           ,
-        ${product_total}=       Evaluate                    ${quantity} * ${sales_price}
-        ${total_amount}=        Evaluate                    ${total_amount} + ${product_total}
-    END
-    ClickElement                xpath=//a[contains(text(),'${DynamicName}')]
-    CLickText                   Details
-    ${opportunity_amount}=      Get Text                    xpath\=//sfa-output-opportunity-amount[@slot\='outputField']
-    ${opportunity_amount}=      Remove String               ${opportunity_amount}       $                           ,
 
-    IF                          ${total_amount} != ${opportunity_amount}
-        Log                     Product Total and Opportunity Amount are equal:${total_amount} : ${opportunity_amount}
-    ELSE
-        Log                     Product Total and Opportunity Amount are NOT equal
+    FOR    ${prod}    IN    @{Product_list}
+        ${quantity}=      Get Text    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'uiOutputNumber')]
+        ${sales_price}=   Get Text    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'forceOutputCurrency')]
+        ${product_quantity}[${prod}]=    Set Variable    ${quantity}
+        ${product_price}[${prod}]=       Set Variable    ${sales_price}
     END
+
+    ${total_amount}=    Set Variable    0
+
+    FOR    ${produ}    IN    @{Product_list}
+        ${quantity}=       Convert To Number    ${product_quantity}[${produ}]
+        ${sales_price}=    Remove String        ${product_price}[${produ}]    $    ,
+        ${sales_price}=    Convert To Number    ${sales_price}
+        ${product_total}=  Evaluate             ${quantity} * ${sales_price}
+        ${total_amount}=   Evaluate             ${total_amount} + ${product_total}
+    END
+
+    ClickElement    xpath=//a[contains(text(),'${DynamicName}')]
+    ClickText       Details
+    ${opportunity_amount}=    Get Text    xpath\=//sfa-output-opportunity-amount[@slot\='outputField']
+    ${opportunity_amount}=    Remove String    ${opportunity_amount}    $    ,
+    ${opportunity_amount}=    Convert To Number    ${opportunity_amount}
+
+    IF    ${total_amount} == ${opportunity_amount}
+        Log    Product Total and Opportunity Amount are EQUAL: ${total_amount} : ${opportunity_amount}    console=True
+    ELSE
+        Log    Product Total and Opportunity Amount are NOT EQUAL    console=True
+    END
+    
+Test Else Branch
+    ${total_amount}=         Set Variable    360000.0
+    ${opportunity_amount}=   Set Variable    999999.0
+    IF    ${total_amount} == ${opportunity_amount}
+        Log    Product Total and Opportunity Amount are EQUAL: ${total_amount} : ${opportunity_amount}    console=True
+    ELSE
+        Log    Product Total and Opportunity Amount are NOT EQUAL    console=True
+    END
+    
+    # ---------------------------------------------------------------------------Opportunity Stage Chage------------------------------------------------
+    ${Prob}    Set Variable
+    ClickText                        Proposal/Price Quote                            partial_match=False
+    ClickText                        Mark as Current Stage                        partial_match=False
+    ${Prob}                        Get Text                      xpath\=//lightning-formatted-number[@slot\='outputField']
+    ${Prob}                        Remove String                 ${Prob}    $    %
+    ${Probab}                        Convert To Number             ${Prob}
+    
+    ${Expected_amount}             Evaluate                      ${opportunity_amount}*(${Probab}/100)
+    ${Expected_revenue}            Get Text                      xpath\=//span[.//lightning-formatted-text[@slot\='outputField']]
+    ${Expected_revenue}            Remove String                 ${Expected_revenue}    $    ,
+    ${Expected_revenue}            Convert To Number             ${Expected_revenue}
+    
+    IF    ${Expected_amount}==${Expected_revenue}
+        Log                        Expected Amount and Expected Revenue are Equal : ${Expected_amount} : ${Expected_revenue}
+    ELSE
+        Log                        Amount are not equal    
+        
+    END
+    
+    ${Expected_revenue}            Set Variable                  99999.00
+    IF    ${Expected_amount}==${Expected_revenue}
+        Log    Expected Amount and Expected Revenue are Equal : ${Expected_amount} : ${Expected_revenue}    console=True
+    ELSE
+        Log    Amount are not equal    console=True
+    END
+
+    
+
+
+    
+    
+    
+    
+    
+    # ClickText                   Products                    partial_match=False
+
+    # &{product_price}            Create Dictionary
+    # &{product_quantity}         Create Dictionary
+    # FOR                         ${prod}                     IN                          @{Product_list}
+    #     ${quantity}=            Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'uiOutputNumber')]
+    #     ${sales_price}=         Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'forceOutputCurrency')]
+    #     ${product_quantity}[${prod}]=                       Set Variable                ${quantity}
+    #     ${product_price}=       Set Variable                ${sales_price}
+    # END
+    # ${total_amount}=            Set Variable                0
+    # FOR                         ${produ}                    IN                          @{Product_list}
+    #     ${quantity}=            Convert To Number           ${quantity}
+    #     ${sales_price}=         Remove String               ${sales_price}              $                           ,
+    #     ${product_total}=       Evaluate                    ${quantity} * ${sales_price}
+    #     ${total_amount}=        Evaluate                    ${total_amount} + ${product_total}
+    # END
+    # ClickElement                xpath=//a[contains(text(),'${DynamicName}')]
+    # CLickText                   Details
+    # ${opportunity_amount}=      Get Text                    xpath\=//sfa-output-opportunity-amount[@slot\='outputField']
+    # ${opportunity_amount}=      Remove String               ${opportunity_amount}       $                           ,
+
+    # IF                          ${total_amount} != ${opportunity_amount}
+    #     Log                     Product Total and Opportunity Amount are equal:${total_amount} : ${opportunity_amount}
+    # ELSE
+    #     Log                     Product Total and Opportunity Amount are NOT equal
+    # END
 
 
     # &{Qty_SP}                 Create Dictionary
