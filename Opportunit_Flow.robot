@@ -149,15 +149,24 @@ Test Else Branch
         Log                        Amount are not equal    
         
     END
-    
-    ${Expected_revenue}            Set Variable                  99999.00
-    IF    ${Expected_amount}==${Expected_revenue}
-        Log    Expected Amount and Expected Revenue are Equal : ${Expected_amount} : ${Expected_revenue}    console=True
-    ELSE
-        Log    Amount are not equal    console=True
-    END
+    [Tags]                        Else check
+        ${Expected_revenue}            Set Variable                  99999.00
+        IF    ${Expected_amount}==${Expected_revenue}
+            Log    Expected Amount and Expected Revenue are Equal : ${Expected_amount} : ${Expected_revenue}    console=True
+        ELSE
+            Log    Amount are not equal    console=True
+        END
+Product removal validation 
+    ClickElement         xpath\=//a[contains(@href, 'OpportunityLineItems')]
+    ClickElement         xpath\=//a[contains(@title,'Show 2 more')]
 
-    
+
+Opportunity Without Mandatory Fields
+    [Tags]    opportunity    negative
+    ClickText    Opportunities
+    ClickText    New
+    ClickText    Save            partial_match=False
+    VerifyText   Complete This Field
 
 
     
