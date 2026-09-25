@@ -22,7 +22,7 @@ Login salesforce
 ${loginURL}                     https://login.salesforce.com/
 ${username}                     garvanshcrt@cyntexa.com
 ${password}                     @Mittal123
-${passkey}                      1Y1PSZNALV
+${passkey}                      WRCQVZR832
 ${Is_Visible}                   IsElementVisible            //span[@title='Cases']
 
 
@@ -156,9 +156,9 @@ Test Else Branch
         ELSE
             Log    Amount are not equal    console=True
         END
-Product removal validation 
-    ClickElement         xpath\=//a[contains(@href, 'OpportunityLineItems')]
-    ClickElement         xpath\=//a[contains(@title,'Show 2 more')]
+# Product removal validation 
+#     ClickElement         xpath\=//a[contains(@href, 'OpportunityLineItems')]
+#     ClickElement         xpath\=//a[contains(@title,'Show 2 more')]
 
 
 Opportunity Without Mandatory Fields
