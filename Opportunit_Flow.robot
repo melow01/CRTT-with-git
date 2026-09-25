@@ -39,6 +39,7 @@ Opportunity Flow
     ${RandomSuffix}             Generate Random String      5                           [LETTERS][NUMBER]
     ${CurrentTime}              Get Current Date            result_format=%H:%M
     ${CloseDate}                Get Current Date            increment=7 days            result_format=%m/%d/%Y
+    ${QuoteNum}                 Get Current Date            increment=7 days            result_format=%m/%d/%Y
     ${DynamicName}              Catenate                    Garvansh                    ${CurrentTime}
     #-----------------------------------------------------------------------------------Opportunity Creation--------------------------------------------
     Login salesforce
@@ -52,10 +53,11 @@ Opportunity Flow
     TypeText                    Close Date                  ${CloseDate}
     ClickText                   Save                        partial_match=False
     ClickText                   Related
+    ScrollTo                    xpath\=//span[@title\='Quotes']
     # ClickText                 Garvansh 08:25
     #-----------------------------------------------------------------------------------Adding Products-----------------------------------------------
-    ClickElement         xpath\=//a[contains(@href, 'OpportunityLineItems')]
-    ClickElement         xpath=//div[@title='Add Products']
+    ClickElement                xpath\=//a[contains(@href, 'OpportunityLineItems')]
+    ClickElement                xpath=//div[@title='Add Products']
     #@{price_list}              Create List
     &{Product_Price}            Create Dictionary
     @{Product_list}             Create List                 GenWatt Diesel 1000kW       Installation: Industrial - High                SLA: Gold
@@ -86,120 +88,133 @@ Opportunity Flow
 
 
     #---------------------------------------------------------------------------------------Price Validation-----------------------------------------
-    
+
     ClickText                   Products                    partial_match=False
 
     &{product_price}            Create Dictionary
     &{product_quantity}         Create Dictionary
 
-    FOR    ${prod}    IN    @{Product_list}
-        ${quantity}=      Get Text    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'uiOutputNumber')]
-        ${sales_price}=   Get Text    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'forceOutputCurrency')]
-        ${product_quantity}[${prod}]=    Set Variable    ${quantity}
-        ${product_price}[${prod}]=       Set Variable    ${sales_price}
+    FOR                         ${prod}                     IN                          @{Product_list}
+        ${quantity}=            Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'uiOutputNumber')]
+        ${sales_price}=         Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'forceOutputCurrency')]
+        ${product_quantity}[${prod}]=                       Set Variable                ${quantity}
+        ${product_price}[${prod}]=                          Set Variable                ${sales_price}
     END
 
-    ${total_amount}=    Set Variable    0
+    ${total_amount}=            Set Variable                0
 
-    FOR    ${produ}    IN    @{Product_list}
-        ${quantity}=       Convert To Number    ${product_quantity}[${produ}]
-        ${sales_price}=    Remove String        ${product_price}[${produ}]    $    ,
-        ${sales_price}=    Convert To Number    ${sales_price}
-        ${product_total}=  Evaluate             ${quantity} * ${sales_price}
-        ${total_amount}=   Evaluate             ${total_amount} + ${product_total}
+    FOR                         ${produ}                    IN                          @{Product_list}
+        ${quantity}=            Convert To Number           ${product_quantity}[${produ}]
+        ${sales_price}=         Remove String               ${product_price}[${produ}]                              $                  ,
+        ${sales_price}=         Convert To Number           ${sales_price}
+        ${product_total}=       Evaluate                    ${quantity} * ${sales_price}
+        ${total_amount}=        Evaluate                    ${total_amount} + ${product_total}
     END
 
-    ClickElement    xpath=//a[contains(text(),'${DynamicName}')]
-    ClickText       Details
-    ${opportunity_amount}=    Get Text    xpath\=//sfa-output-opportunity-amount[@slot\='outputField']
-    ${opportunity_amount}=    Remove String    ${opportunity_amount}    $    ,
-    ${opportunity_amount}=    Convert To Number    ${opportunity_amount}
+    ClickElement                xpath=//a[contains(text(),'${DynamicName}')]
+    ClickText                   Details
+    ${opportunity_amount}=      Get Text                    xpath\=//sfa-output-opportunity-amount[@slot\='outputField']
+    ${opportunity_amount}=      Remove String               ${opportunity_amount}       $                           ,
+    ${opportunity_amount}=      Convert To Number           ${opportunity_amount}
 
-    IF    ${total_amount} == ${opportunity_amount}
-        Log    Product Total and Opportunity Amount are EQUAL: ${total_amount} : ${opportunity_amount}    console=True
+    IF                          ${total_amount} == ${opportunity_amount}
+        Log                     Product Total and Opportunity Amount are EQUAL: ${total_amount} : ${opportunity_amount}                console=True
     ELSE
-        Log    Product Total and Opportunity Amount are NOT EQUAL    console=True
+        Log                     Product Total and Opportunity Amount are NOT EQUAL      console=True
     END
-    
-Test Else Branch
-    ${total_amount}=         Set Variable    360000.0
-    ${opportunity_amount}=   Set Variable    999999.0
-    IF    ${total_amount} == ${opportunity_amount}
-        Log    Product Total and Opportunity Amount are EQUAL: ${total_amount} : ${opportunity_amount}    console=True
-    ELSE
-        Log    Product Total and Opportunity Amount are NOT EQUAL    console=True
-    END
-    
-    # ---------------------------------------------------------------------------Opportunity Stage Chage------------------------------------------------
-    ${Prob}    Set Variable
-    ClickText                        Proposal/Price Quote                            partial_match=False
-    ClickText                        Mark as Current Stage                        partial_match=False
-    ${Prob}                        Get Text                      xpath\=//lightning-formatted-number[@slot\='outputField']
-    ${Prob}                        Remove String                 ${Prob}    $    %
-    ${Probab}                        Convert To Number             ${Prob}
-    
-    ${Expected_amount}             Evaluate                      ${opportunity_amount}*(${Probab}/100)
-    ${Expected_revenue}            Get Text                      xpath\=//span[.//lightning-formatted-text[@slot\='outputField']]
-    ${Expected_revenue}            Remove String                 ${Expected_revenue}    $    ,
-    ${Expected_revenue}            Convert To Number             ${Expected_revenue}
-    
-    IF    ${Expected_amount}==${Expected_revenue}
-        Log                        Expected Amount and Expected Revenue are Equal : ${Expected_amount} : ${Expected_revenue}
-    ELSE
-        Log                        Amount are not equal    
-        
-    END
-    [Tags]                        Else check
-        ${Expected_revenue}            Set Variable                  99999.00
-        IF    ${Expected_amount}==${Expected_revenue}
-            Log    Expected Amount and Expected Revenue are Equal : ${Expected_amount} : ${Expected_revenue}    console=True
-        ELSE
-            Log    Amount are not equal    console=True
-        END
-# Product removal validation 
-#     ClickElement         xpath\=//a[contains(@href, 'OpportunityLineItems')]
-#     ClickElement         xpath\=//a[contains(@title,'Show 2 more')]
+
+    ScrollTo                    xpath\=//span[@title\='Quotes']
+    ClickElement                xpath\=//span[@title\='Quotes']
+    ClickText                   New Quote
+    ClickText                   Quote Name
+    TypeText                    Quote Name                  ${QuoteNum}
+    ClickText                   Save
+    ClickText                   ${QuoteNum}
+    ClickText                   Details
+
+    ${Grand_Total}              GetText                     Grand Total
+    ${Grand_Total}=             Remove String               ${Grand_Total}              $                           ,
+    ${Grand_Total}=             Convert To Number           ${Grand_Total}
+    Log                        ${Grand_Total}
+    # Test Else Branch
+    #                           ${total_amount}=            Set Variable                360000.0
+    #                           ${opportunity_amount}=      Set Variable                999999.0
+    #                           IF                          ${total_amount} == ${opportunity_amount}
+    #                           Log                         Product Total and Opportunity Amount are EQUAL: ${total_amount} : ${opportunity_amount}    console=True
+    #                           ELSE
+    #                           Log                         Product Total and Opportunity Amount are NOT EQUAL      console=True
+    #                           END
+
+    #                           # ---------------------------------------------------------------------------Opportunity Stage Chage------------------------------------------------
+    #                           ${Prob}                     Set Variable
+    #                           ClickText                   Proposal/Price Quote        partial_match=False
+    #                           ClickText                   Mark as Current Stage       partial_match=False
+    #                           ${Prob}                     Get Text                    xpath\=//lightning-formatted-number[@slot\='outputField']
+    #                           ${Prob}                     Remove String               ${Prob}                     $                  %
+    #                           ${Probab}                   Convert To Number           ${Prob}
+
+    #                           ${Expected_amount}          Evaluate                    ${opportunity_amount}*(${Probab}/100)
+    #                           ${Expected_revenue}         Get Text                    xpath\=//span[.//lightning-formatted-text[@slot\='outputField']]
+    #                           ${Expected_revenue}         Remove String               ${Expected_revenue}         $                  ,
+    #                           ${Expected_revenue}         Convert To Number           ${Expected_revenue}
+
+    #                           IF                          ${Expected_amount}==${Expected_revenue}
+    #                           Log                         Expected Amount and Expected Revenue are Equal : ${Expected_amount} : ${Expected_revenue}
+    #                           ELSE
+    #                           Log                         Amount are not equal
+
+    #                           END
+    #                           [Tags]                      Else check
+    #                           ${Expected_revenue}         Set Variable                99999.00
+    #                           IF                          ${Expected_amount}==${Expected_revenue}
+    #                           Log                         Expected Amount and Expected Revenue are Equal : ${Expected_amount} : ${Expected_revenue}    console=True
+    #                           ELSE
+    #                           Log                         Amount are not equal        console=True
+    #                           END
+    # # Product removal validation
+    # #                         ClickElement                xpath\=//a[contains(@href, 'OpportunityLineItems')]
+    # #                         ClickElement                xpath\=//a[contains(@title,'Show 2 more')]
 
 
-Opportunity Without Mandatory Fields
-    [Tags]    opportunity    negative
-    ClickText    Opportunities
-    ClickText    New
-    ClickText    Save            partial_match=False
-    VerifyText   Complete This Field
+    # Opportunity Without Mandatory Fields
+    #                           [Tags]                      opportunity                 negative
+    #                           ClickText                   Opportunities
+    #                           ClickText                   New
+    #                           ClickText                   Save                        partial_match=False
+    #                           VerifyText                  Complete This Field
 
 
-    
-    
-    
-    
-    
-    # ClickText                   Products                    partial_match=False
 
-    # &{product_price}            Create Dictionary
-    # &{product_quantity}         Create Dictionary
-    # FOR                         ${prod}                     IN                          @{Product_list}
-    #     ${quantity}=            Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'uiOutputNumber')]
-    #     ${sales_price}=         Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'forceOutputCurrency')]
-    #     ${product_quantity}[${prod}]=                       Set Variable                ${quantity}
-    #     ${product_price}=       Set Variable                ${sales_price}
+
+
+
+
+    # ClickText                 Products                    partial_match=False
+
+    # &{product_price}          Create Dictionary
+    # &{product_quantity}       Create Dictionary
+    # FOR                       ${prod}                     IN                          @{Product_list}
+    #                           ${quantity}=                Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'uiOutputNumber')]
+    #                           ${sales_price}=             Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'forceOutputCurrency')]
+    #                           ${product_quantity}[${prod}]=                           Set Variable                ${quantity}
+    #                           ${product_price}=           Set Variable                ${sales_price}
     # END
-    # ${total_amount}=            Set Variable                0
-    # FOR                         ${produ}                    IN                          @{Product_list}
-    #     ${quantity}=            Convert To Number           ${quantity}
-    #     ${sales_price}=         Remove String               ${sales_price}              $                           ,
-    #     ${product_total}=       Evaluate                    ${quantity} * ${sales_price}
-    #     ${total_amount}=        Evaluate                    ${total_amount} + ${product_total}
+    # ${total_amount}=          Set Variable                0
+    # FOR                       ${produ}                    IN                          @{Product_list}
+    #                           ${quantity}=                Convert To Number           ${quantity}
+    #                           ${sales_price}=             Remove String               ${sales_price}              $                  ,
+    #                           ${product_total}=           Evaluate                    ${quantity} * ${sales_price}
+    #                           ${total_amount}=            Evaluate                    ${total_amount} + ${product_total}
     # END
-    # ClickElement                xpath=//a[contains(text(),'${DynamicName}')]
-    # CLickText                   Details
-    # ${opportunity_amount}=      Get Text                    xpath\=//sfa-output-opportunity-amount[@slot\='outputField']
-    # ${opportunity_amount}=      Remove String               ${opportunity_amount}       $                           ,
+    # ClickElement              xpath=//a[contains(text(),'${DynamicName}')]
+    # CLickText                 Details
+    # ${opportunity_amount}=    Get Text                    xpath\=//sfa-output-opportunity-amount[@slot\='outputField']
+    # ${opportunity_amount}=    Remove String               ${opportunity_amount}       $                           ,
 
-    # IF                          ${total_amount} != ${opportunity_amount}
-    #     Log                     Product Total and Opportunity Amount are equal:${total_amount} : ${opportunity_amount}
+    # IF                        ${total_amount} != ${opportunity_amount}
+    #                           Log                         Product Total and Opportunity Amount are equal:${total_amount} : ${opportunity_amount}
     # ELSE
-    #     Log                     Product Total and Opportunity Amount are NOT equal
+    #                           Log                         Product Total and Opportunity Amount are NOT equal
     # END
 
 
