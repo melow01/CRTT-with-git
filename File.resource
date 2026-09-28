@@ -2,7 +2,7 @@
 ${loginURL}           https://login.salesforce.com/
 ${username}           garvanshcrt@cyntexa.com
 ${password}           @Mittal123
-${passkey}            WRCQVZR832
+${passkey}            RDWN34XSN7
 
 #--------------------------------------Dynamic Values------------------------
 *** Variables ***
