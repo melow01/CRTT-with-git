@@ -66,10 +66,13 @@ Lead Creation and Conversion
     END
     
     ClickElement                xpath=//button[@title='Next']
-    FOR                         ${index}                    ${Product}                  IN ENUMERATE                @{Product_list}
+    FOR                              ${Index}               ${Product}                  IN ENUMERATE                @{Product_list}
         ClickElement            xpath=//tr[.//a[text()='${Product}']]//button[contains(@title,'Edit Quantity')]     clicks=2
+        VerifyElement   xpath=//tr[.//a[text()='${Product}']]//input
        
-        TypeText                Quantity                    ${Quantity_List}[${index}]                              anchor=${Product}
+        TypeText                Quantity                    ${Quantity_List}[${Index}]                      anchor=${Product}
+        LogScreenshot
+                                      
         
     END
     ClickText                   Save
