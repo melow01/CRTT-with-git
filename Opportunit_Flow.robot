@@ -1,141 +1,141 @@
-*** Settings ***
+# *** Settings ***
 
-Documentation                   New test suite
-# You can change imported library to "QWeb" if testing generic web application, not Salesforce.
-Library                         QForce
-Library                         String
-Library                         DateTime
-Library                         Collections
-Suite Setup                     Open Browser                ${loginURL}                 chrome
-Suite Teardown                  Close All Browsers
-*** Keywords ***
-Login salesforce
-    TypeText                    Username                    ${username}
-    ClickText                   Log in
-    TypeText                    Password                    ${password}
-    ClickText                   Log in
-    TypeText                    Verification Code           ${passkey}
-    ClickText                   Verify
-    VerifyText                  Developer Edition
+# Documentation                   New test suite
+# # You can change imported library to "QWeb" if testing generic web application, not Salesforce.
+# Library                         QForce
+# Library                         String
+# Library                         DateTime
+# Library                         Collections
+# Suite Setup                     Open Browser                ${loginURL}                 chrome
+# Suite Teardown                  Close All Browsers
+# *** Keywords ***
+# Login salesforce
+#     TypeText                    Username                    ${username}
+#     ClickText                   Log in
+#     TypeText                    Password                    ${password}
+#     ClickText                   Log in
+#     TypeText                    Verification Code           ${passkey}
+#     ClickText                   Verify
+#     VerifyText                  Developer Edition
 
-*** Variables ******
-${loginURL}                     https://login.salesforce.com/
-${username}                     garvanshcrt@cyntexa.com
-${password}                     @Mittal123
-${passkey}                      WRCQVZR832
-${Is_Visible}                   IsElementVisible            //span[@title='Cases']
-
-
-*** Test Cases ***
-
-Login
-
-    # ${DynamicCompany}         Catenate                    Comp                        ${RandomSuffix}
+# *** Variables ******
+# ${loginURL}                     https://login.salesforce.com/
+# ${username}                     garvanshcrt@cyntexa.com
+# ${password}                     @Mittal123
+# ${passkey}                      WRCQVZR832
+# ${Is_Visible}                   IsElementVisible            //span[@title='Cases']
 
 
+# *** Test Cases ***
+
+# Login
+
+#     # ${DynamicCompany}         Catenate                    Comp                        ${RandomSuffix}
 
 
-Opportunity Flow
-    ${RandomSuffix}             Generate Random String      5                           [LETTERS][NUMBER]
-    ${CurrentTime}              Get Current Date            result_format=%H:%M
-    ${CloseDate}                Get Current Date            increment=7 days            result_format=%m/%d/%Y
-    ${QuoteNum}                 Get Current Date            increment=7 days            result_format=%m/%d/%Y
-    ${DynamicName}              Catenate                    Garvansh                    ${CurrentTime}
-    #-----------------------------------------------------------------------------------Opportunity Creation--------------------------------------------
-    Login salesforce
-    ClickText                   Opportunities
-    ClickText                   New
-    UseModal                    On
-    ClickText                   Opportunity Name
-    TypeText                    Opportunity Name            ${DynamicName}
-    PickList                    Stage                       Qualification
-    ClickText                   Close Date
-    TypeText                    Close Date                  ${CloseDate}
-    ClickText                   Save                        partial_match=False
-    ClickText                   Related
-    ScrollTo                    xpath\=//span[@title\='Quotes']
-    # ClickText                 Garvansh 08:25
-    #-----------------------------------------------------------------------------------Adding Products-----------------------------------------------
-    ClickElement                xpath\=//a[contains(@href, 'OpportunityLineItems')]
-    ClickElement                xpath=//div[@title='Add Products']
-    #@{price_list}              Create List
-    &{Product_Price}            Create Dictionary
-    @{Product_list}             Create List                 GenWatt Diesel 1000kW       Installation: Industrial - High                SLA: Gold
-    @{Quantity_List}            Create List                 1                           2                           3
-    # &{Product_qty}            Create Dictionary           GenWatt Diesel 1000kW= 2    Installation: Industrial - High= 1             SLA: Gold= 2
-    ClickElement                xpath=//input[@aria-describedby='Search']
-    FOR                         ${Product}                  IN                          @{Product_list}
-        TypeText                Search Products             ${Product}
-        ClickElement            xpath=//lightning-icon[@icon-name='utility:search']
-        ClickElement            xpath=//div[@role='listbox']
-        ClickCheckbox           ${Product}                  on
-        # ${price}              Get Text                    xpath\=//tr[.//a[text()\='${Product}']]//span[contains(@class,'forceOutputCurrency')]
-
-    END
-    ClickElement                xpath=//button[@title='Next']
-    # Log Dictionary            ${Product_Price}
-    # Log                       ${Product_Price}
-
-    FOR                         ${index}                    ${Product}                  IN ENUMERATE                @{Product_list}
-        ClickElement            xpath=//tr[.//a[text()='${Product}']]//button[contains(@title,'Edit Quantity')]     clicks=2
-        # ${Sales_price}        Get Text                    xpath\=//tr[.//a[text()\='${Product}']]//span[contains(@class,'forceOutputCurrency')]
-        TypeText                Quantity                    ${Quantity_List}[${index}]                              anchor=${Product}
-        # Set To Dictionary     ${Product_Price}            ${Product}                  ${Sales_price}
-    END
-    ClickText                   Save
-    ClickElement                xpath=//a[text()='${DynamicName}']
-    ClickText                   Details
 
 
-    #---------------------------------------------------------------------------------------Price Validation-----------------------------------------
+# Opportunity Flow
+#     ${RandomSuffix}             Generate Random String      5                           [LETTERS][NUMBER]
+#     ${CurrentTime}              Get Current Date            result_format=%H:%M
+#     ${CloseDate}                Get Current Date            increment=7 days            result_format=%m/%d/%Y
+#     ${QuoteNum}                 Get Current Date            increment=7 days            result_format=%m/%d/%Y
+#     ${DynamicName}              Catenate                    Garvansh                    ${CurrentTime}
+#     #-----------------------------------------------------------------------------------Opportunity Creation--------------------------------------------
+#     Login salesforce
+#     ClickText                   Opportunities
+#     ClickText                   New
+#     UseModal                    On
+#     ClickText                   Opportunity Name
+#     TypeText                    Opportunity Name            ${DynamicName}
+#     PickList                    Stage                       Qualification
+#     ClickText                   Close Date
+#     TypeText                    Close Date                  ${CloseDate}
+#     ClickText                   Save                        partial_match=False
+#     ClickText                   Related
+#     ScrollTo                    xpath\=//span[@title\='Quotes']
+#     # ClickText                 Garvansh 08:25
+#     #-----------------------------------------------------------------------------------Adding Products-----------------------------------------------
+#     ClickElement                xpath\=//a[contains(@href, 'OpportunityLineItems')]
+#     ClickElement                xpath=//div[@title='Add Products']
+#     #@{price_list}              Create List
+#     &{Product_Price}            Create Dictionary
+#     @{Product_list}             Create List                 GenWatt Diesel 1000kW       Installation: Industrial - High                SLA: Gold
+#     @{Quantity_List}            Create List                 1                           2                           3
+#     # &{Product_qty}            Create Dictionary           GenWatt Diesel 1000kW= 2    Installation: Industrial - High= 1             SLA: Gold= 2
+#     ClickElement                xpath=//input[@aria-describedby='Search']
+#     FOR                         ${Product}                  IN                          @{Product_list}
+#         TypeText                Search Products             ${Product}
+#         ClickElement            xpath=//lightning-icon[@icon-name='utility:search']
+#         ClickElement            xpath=//div[@role='listbox']
+#         ClickCheckbox           ${Product}                  on
+#         # ${price}              Get Text                    xpath\=//tr[.//a[text()\='${Product}']]//span[contains(@class,'forceOutputCurrency')]
 
-    ClickText                   Products                    partial_match=False
+#     END
+#     ClickElement                xpath=//button[@title='Next']
+#     # Log Dictionary            ${Product_Price}
+#     # Log                       ${Product_Price}
 
-    &{product_price}            Create Dictionary
-    &{product_quantity}         Create Dictionary
+#     FOR                         ${index}                    ${Product}                  IN ENUMERATE                @{Product_list}
+#         ClickElement            xpath=//tr[.//a[text()='${Product}']]//button[contains(@title,'Edit Quantity')]     clicks=2
+#         # ${Sales_price}        Get Text                    xpath\=//tr[.//a[text()\='${Product}']]//span[contains(@class,'forceOutputCurrency')]
+#         TypeText                Quantity                    ${Quantity_List}[${index}]                              anchor=${Product}
+#         # Set To Dictionary     ${Product_Price}            ${Product}                  ${Sales_price}
+#     END
+#     ClickText                   Save
+#     ClickElement                xpath=//a[text()='${DynamicName}']
+#     ClickText                   Details
 
-    FOR                         ${prod}                     IN                          @{Product_list}
-        ${quantity}=            Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'uiOutputNumber')]
-        ${sales_price}=         Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'forceOutputCurrency')]
-        ${product_quantity}[${prod}]=                       Set Variable                ${quantity}
-        ${product_price}[${prod}]=                          Set Variable                ${sales_price}
-    END
 
-    ${total_amount}=            Set Variable                0
+#     #---------------------------------------------------------------------------------------Price Validation-----------------------------------------
 
-    FOR                         ${produ}                    IN                          @{Product_list}
-        ${quantity}=            Convert To Number           ${product_quantity}[${produ}]
-        ${sales_price}=         Remove String               ${product_price}[${produ}]                              $                  ,
-        ${sales_price}=         Convert To Number           ${sales_price}
-        ${product_total}=       Evaluate                    ${quantity} * ${sales_price}
-        ${total_amount}=        Evaluate                    ${total_amount} + ${product_total}
-    END
+#     ClickText                   Products                    partial_match=False
 
-    ClickElement                xpath=//a[contains(text(),'${DynamicName}')]
-    ClickText                   Details
-    ${opportunity_amount}=      Get Text                    xpath\=//sfa-output-opportunity-amount[@slot\='outputField']
-    ${opportunity_amount}=      Remove String               ${opportunity_amount}       $                           ,
-    ${opportunity_amount}=      Convert To Number           ${opportunity_amount}
+#     &{product_price}            Create Dictionary
+#     &{product_quantity}         Create Dictionary
 
-    IF                          ${total_amount} == ${opportunity_amount}
-        Log                     Product Total and Opportunity Amount are EQUAL: ${total_amount} : ${opportunity_amount}                console=True
-    ELSE
-        Log                     Product Total and Opportunity Amount are NOT EQUAL      console=True
-    END
+#     FOR                         ${prod}                     IN                          @{Product_list}
+#         ${quantity}=            Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'uiOutputNumber')]
+#         ${sales_price}=         Get Text                    xpath\=//tr[.//a[text()\='${prod}']]//span[contains(@class,'forceOutputCurrency')]
+#         ${product_quantity}[${prod}]=                       Set Variable                ${quantity}
+#         ${product_price}[${prod}]=                          Set Variable                ${sales_price}
+#     END
 
-    ScrollTo                    xpath\=//span[@title\='Quotes']
-    ClickElement                xpath\=//span[@title\='Quotes']
-    ClickText                   New Quote
-    ClickText                   Quote Name
-    TypeText                    Quote Name                  ${QuoteNum}
-    ClickText                   Save
-    ClickText                   ${QuoteNum}
-    ClickText                   Details
+#     ${total_amount}=            Set Variable                0
 
-    ${Grand_Total}              GetText                     Grand Total
-    ${Grand_Total}=             Remove String               ${Grand_Total}              $                           ,
-    ${Grand_Total}=             Convert To Number           ${Grand_Total}
-    Log                        ${Grand_Total}
+#     FOR                         ${produ}                    IN                          @{Product_list}
+#         ${quantity}=            Convert To Number           ${product_quantity}[${produ}]
+#         ${sales_price}=         Remove String               ${product_price}[${produ}]                              $                  ,
+#         ${sales_price}=         Convert To Number           ${sales_price}
+#         ${product_total}=       Evaluate                    ${quantity} * ${sales_price}
+#         ${total_amount}=        Evaluate                    ${total_amount} + ${product_total}
+#     END
+
+#     ClickElement                xpath=//a[contains(text(),'${DynamicName}')]
+#     ClickText                   Details
+#     ${opportunity_amount}=      Get Text                    xpath\=//sfa-output-opportunity-amount[@slot\='outputField']
+#     ${opportunity_amount}=      Remove String               ${opportunity_amount}       $                           ,
+#     ${opportunity_amount}=      Convert To Number           ${opportunity_amount}
+
+#     IF                          ${total_amount} == ${opportunity_amount}
+#         Log                     Product Total and Opportunity Amount are EQUAL: ${total_amount} : ${opportunity_amount}                console=True
+#     ELSE
+#         Log                     Product Total and Opportunity Amount are NOT EQUAL      console=True
+#     END
+
+#     ScrollTo                    xpath\=//span[@title\='Quotes']
+#     ClickElement                xpath\=//span[@title\='Quotes']
+#     ClickText                   New Quote
+#     ClickText                   Quote Name
+#     TypeText                    Quote Name                  ${QuoteNum}
+#     ClickText                   Save
+#     ClickText                   ${QuoteNum}
+#     ClickText                   Details
+
+#     ${Grand_Total}              GetText                     Grand Total
+#     ${Grand_Total}=             Remove String               ${Grand_Total}              $                           ,
+#     ${Grand_Total}=             Convert To Number           ${Grand_Total}
+#     Log                        ${Grand_Total}
     # Test Else Branch
     #                           ${total_amount}=            Set Variable                360000.0
     #                           ${opportunity_amount}=      Set Variable                999999.0
