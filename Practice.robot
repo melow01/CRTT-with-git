@@ -65,10 +65,10 @@ Direct record creation using REST API
     # Step 2: Prepare Authorization Header
     &{auth_headers}=  Create Dictionary    Authorization=Bearer ${access_token}    Content-Type=application/json
     
-    Login salesforce
+    
     
     # Step 3: Create Account via POST /sobjects/Account/
-    &{acc_body}=      Create Dictionary    Name=Copado CRT API Account    Rating=Hot    Industry=Technology
+    &{acc_body}=      Create Dictionary    Name=Copado CRT API Account 2    Rating=Hot    Industry=Technology
     ${acc_resp}=      POST On Session      sf_api    /services/data/v60.0/sobjects/Account/    json=${acc_body}    headers=${auth_headers}    expected_status=201
     ${account_id}=    Set Variable         ${acc_resp.json()}[id]
     Log To Console    Created Account ID: ${account_id}
@@ -78,4 +78,9 @@ Direct record creation using REST API
     ${opp_resp}=      POST On Session      sf_api    /services/data/v60.0/sobjects/Opportunity/    json=${opp_body}    headers=${auth_headers}    expected_status=201
     ${opp_id}=        Set Variable         ${opp_resp.json()}[id]
     Log To Console    Created Linked Opportunity ID: ${opp_id}
+
+    Login salesforce
+    ClickText         Accounts
+    ClickElement      xpath\=input[@placeholder='Search this list...']
+    TypeText          Search               Copado CRT API Account 2                        
 
