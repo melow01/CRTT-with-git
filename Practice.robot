@@ -62,6 +62,7 @@ Direct record creation using REST API
     
     ${Accounts}            Create record               Account      Name=${Dynamic}    Rating=Hot
     Log To Console         ${Accounts}
+    UpdateRecord           Account                     ${Accounts}                     Phone=1234567899
     
     ${Query}               QueryRecords                query= Select id,Name from Account Where CreatedDate = TODAY Order By CreatedDate Desc limit 1
     DeleteRecord           Account                     ${Accounts}
