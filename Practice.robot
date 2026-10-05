@@ -64,5 +64,6 @@ Direct record creation using REST API
     Log To Console         ${Accounts}
     
     ${Query}               QueryRecords                query= Select id,Name from Account Where CreatedDate = TODAY Order By CreatedDate Desc limit 1
+    DeleteRecord           Account                     ${Accounts}
 
 
